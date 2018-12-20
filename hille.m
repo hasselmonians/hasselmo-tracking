@@ -18,14 +18,108 @@ tic
 % The finite difference operator combines past trajectory points in proportions according to order.
 % The first three terms of the Hille series in matrix form are:
 % $$ \pmatrix{1 \quad \frac{t}{\Delta t} \quad \frac{t^2}{2(\Delta t)^2}}
-% \pmatrix{0 \quad 0 \quad 1 \cr -\frac{1}{2} \quad 0 \quad \frac{1}{2} \cr 1 -1 1 \cr}
+% \pmatrix{0 \quad 0 \quad 1 \cr -\frac{1}{2} \quad 0 \quad \frac{1}{2} \cr 1 \quad -1 \quad 1 \cr}
 % \pmatrix{f(a) \cr f(a-\Delta t) \cr f(a - 2\Delta t)} $$
+
+%% An Example
+% The trajectory we will consider is a simple polynomial.
+
+% initialize the time step
+dt    = 0.1; % s
+
+% the perceiver has seen 1 second of data
+a     = 0:dt:1;
+
+% define the feature matrix
+fcn   = @(x) transpose(100 + 3*x - 10*x.^2 + 3*x.^3 + x.^4);
+f     = fcn(a);
+
+% compute the Hille coefficients
+D     = getFiniteDifferenceCoeffs(6);
+% compute the kernel
+k     = D * f(end:-1:end-6);
+
+% set up the real trajectory
+t     = dt:dt:1;
+traj0 = fcn([a, t]); % the real trajectory
+
+% iterate the model forwards for another second
+traj  = [fcn(a); NaN(length(t), 1)]; % the predicted trajectory
+T     = zeros(1, 7); % stores the prefactors
+for ii = 1:length(t)
+  for ww = 1:7
+    T(ww)   = prefactor(ww-1, dt, t(ii));
+  end
+  qq        = ii + length(a);
+  traj(qq)  = T * k;
+end
+
+figure('OuterPosition',[0 0 1200 1200],'PaperUnits','points','PaperSize',[1200 1200]); hold on
+plot([a, t], traj0, 'k');
+plot([a, t], traj, 'r');
+xlabel('time (s)')
+ylabel('f(t)')
+legend({'trajectory', 'prediction'}, 'Location', 'best')
+title('Predicting a sinusoidal trajectory')
+
+prettyFig()
+
+if being_published
+  snapnow
+  delete(gcf)
+end
+
 
 %% Version Info
 pFooter;
 
-t = toc;
+timeDocumentWasBuiltIn = toc;
 
 %%
 % This document was built in:
-disp(strcat(oval(t,3),' seconds.'))
+disp(strcat(oval(timeDocumentWasBuiltIn,3),' seconds.'))
+
+function y = prefactor(n, dt, t)
+  % accepts the term order, the time step, and the forward time (in units of time)
+  % and computes the prefactor to the nth term in the Hille series
+  y = t^n / (factorial(n) * dt^n);
+end % prefactor
+
+function coeff = getFiniteDifferenceCoeffs(n)
+  % n is the order of derivative you want
+
+  if n == 0
+    coeff = [1];
+  elseif n == 1
+    coeff = [1, 0, 0; 1/2, 0, -1/2];
+  elseif n == 2
+    coeff = [1, 0, 0; 1/2, 0, -1/2; -1, 2, -1];
+  elseif n == 3
+    coeff = [1, 0, 0, 0, 0;, 1/2, 0, -1/2, 0, 0; -1, 2, -1, 0, 0; 1/2, -1, 0, 1, -1/2];
+  elseif n == 4
+    coeff = [1, 0, 0, 0, 0; ...
+             1/2, 0, -1/2, 0, 0; ...
+             -1, 2, -1, 0, 0; ...
+             1/2, -1, 0, 1, -1/2; ...
+             1, -4, 6, -4, 1];
+  elseif n == 5
+    coeff = [1, 0, 0, 0, 0, 0, 0; ...
+             1/2, 0, -1/2, 0, 0, 0, 0; ...
+             -1, 2, -1, 0, 0, 0, 0; ...
+             1/2, -1, 0, 1, -1/2, 0, 0; ...
+             1, -4, 6, -4, 1, 0, 0; ...
+             1/2, -2, 5/2, 0, -5/2, 2, -1/2];
+  elseif n == 6
+     coeff = [1, 0, 0, 0, 0, 0, 0; ...
+              1/2, 0, -1/2, 0, 0, 0, 0; ...
+              -1, 2, -1, 0, 0, 0, 0; ...
+              1/2, -1, 0, 1, -1/2, 0, 0; ...
+              1, -4, 6, -4, 1, 0, 0; ...
+              1/2, -2, 5/2, 0, -5/2, 2, -1/2; ...
+              1, -6, 15, -20, 15, -6, 1];
+  else
+    coeff = zeros(n);
+    coeff(1:7, 1:7) = getFiniteDifferenceCoeffs(6);
+  end
+
+end % getFiniteDifferenceCoeffs
