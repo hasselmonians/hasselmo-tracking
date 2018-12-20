@@ -17,8 +17,8 @@ tic
 %
 % The finite difference operator combines past trajectory points in proportions according to order.
 % The first three terms of the Hille series in matrix form are:
-% $$ \pmatrix{1 \frac{t}{\Delta t} \frac{t^2}{2(\Delta t)^2}}
-% \pmatrix{0 0 1 \cr -\frac{1}{2} 0 \frac{1}{2} \cr 1 -1 1 \cr}
+% $$ \pmatrix{1 \quad \frac{t}{\Delta t} \quad \frac{t^2}{2(\Delta t)^2}}
+% \pmatrix{0 \quad 0 \quad 1 \cr -\frac{1}{2} \quad 0 \quad \frac{1}{2} \cr 1 -1 1 \cr}
 % \pmatrix{f(a) \cr f(a-\Delta t) \cr f(a - 2\Delta t)} $$
 
 %% Version Info
