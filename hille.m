@@ -13,7 +13,13 @@ tic
 % For a discrete time step $\Delta t$, the trajectory $f$ can be predicted at future times $a + t$.
 % The number of historical trajectory points needed depends on the order of the approximation.
 % When expanded, this equation yields:
-% $$ \left[ 1 + \frac{t}{\Delta t} \mathrm{D}^1 + \frac{t^2}{2 (\Delta t)^2} + ... \right] f(a) $$
+% $$ \left[ 1 + \frac{t}{\Delta t} \mathrm{D}^1 + \frac{t^2}{2 (\Delta t)^2} \mathrm{D}^2 + ... \right] f(a) $$
+%
+% The finite difference operator combines past trajectory points in proportions according to order.
+% The first three terms of the Hille series in matrix form are:
+% $$ \pmatrix{1 \frac{t}{\Delta t} \frac{t^2}{2(\Delta t)^2}}
+% \pmatrix{0 0 1 \cr -\frac{1}{2} 0 \frac{1}{2} \cr 1 -1 1 \cr}
+% \pmatrix{f(a) \cr f(a-\Delta t) \cr f(a - 2\Delta t)} $$
 
 %% Version Info
 pFooter;
