@@ -31,7 +31,7 @@ dt    = 0.1; % s
 a     = 0:dt:1;
 
 % define the feature matrix
-fcn   = @(x) transpose(100 + 3*x - 10*x.^2 + 3*x.^3 + x.^4);
+fcn   = @(x) transpose(3*x - x.^2);
 f     = fcn(a);
 
 % compute the Hille coefficients
@@ -39,24 +39,26 @@ D     = getFiniteDifferenceCoeffs(6);
 % compute the kernel
 k     = D * f(end:-1:end-6);
 
+return
+
 % set up the real trajectory
 t     = dt:dt:1;
-traj0 = fcn([a, t]); % the real trajectory
+traj0 = fcn([a, a(end) + t]); % the real trajectory
 
 % iterate the model forwards for another second
 traj  = [fcn(a); NaN(length(t), 1)]; % the predicted trajectory
 T     = zeros(1, 7); % stores the prefactors
 for ii = 1:length(t)
   for ww = 1:7
-    T(ww)   = prefactor(ww-1, dt, t(ii));
+    T(ww)   = t(ii)^(ww-1) * prefactor(ww-1, dt);
   end
   qq        = ii + length(a);
   traj(qq)  = T * k;
 end
 
 figure('OuterPosition',[0 0 1200 1200],'PaperUnits','points','PaperSize',[1200 1200]); hold on
-plot([a, t], traj0, 'k');
-plot([a, t], traj, 'r');
+plot([a, a(end) + t], traj0, 'k');
+plot([a, a(end) + t], traj, 'r');
 xlabel('time (s)')
 ylabel('f(t)')
 legend({'trajectory', 'prediction'}, 'Location', 'best')
@@ -79,10 +81,10 @@ timeDocumentWasBuiltIn = toc;
 % This document was built in:
 disp(strcat(oval(timeDocumentWasBuiltIn,3),' seconds.'))
 
-function y = prefactor(n, dt, t)
+function y = prefactor(n, dt)
   % accepts the term order, the time step, and the forward time (in units of time)
   % and computes the prefactor to the nth term in the Hille series
-  y = t^n / (factorial(n) * dt^n);
+  y = 1 / (factorial(n) * dt^n);
 end % prefactor
 
 function coeff = getFiniteDifferenceCoeffs(n)
@@ -121,5 +123,7 @@ function coeff = getFiniteDifferenceCoeffs(n)
     coeff = zeros(n);
     coeff(1:7, 1:7) = getFiniteDifferenceCoeffs(6);
   end
+
+  % coeff = -coeff;
 
 end % getFiniteDifferenceCoeffs
