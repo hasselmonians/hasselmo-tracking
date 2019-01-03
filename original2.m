@@ -8,7 +8,7 @@
 %will need to account for the negative value of the coordinates).
 
 %LVamFocusOnRangesDnowDoAccel.m - now take consecutive velocities and
-%compute acceleration. 
+%compute acceleration.
 
 %LVamFocusOnRangeCveryGOODgetVelocity.m - This version collects points from
 %the range, turns it into a corner/initcorner and computes the velocity.
@@ -42,7 +42,7 @@
 %%Can't just choose random points.  Need triplets.  Can't just choose random
 %triplets, need adjacent triplets. Should search an X range to find
 %adjacent x points to compute y dynamics.  INPUT vectors should be discete
-%individual vectors that should come from a range.  Output vectors are specific.  
+%individual vectors that should come from a range.  Output vectors are specific.
 %SEARCH vector is a range.
 
 %LVaeGetsTripletsEXCELLENT.m - this version extracts triplets of the x,y
@@ -63,7 +63,7 @@
 close all
 clear all
 figure('Position',[10 400 1400 800]);
-fig2D=gcf; axpvay2D=gca; colormap(gray); 
+fig2D=gcf; axpvay2D=gca; colormap(gray);
 
 %Code for selecting subplots
 numplots=3;
@@ -82,9 +82,8 @@ pvay(:,1)=[ground 20 -0.8]'; %Starting point pvay for trajectory pos=ground, vel
 pvax=zeros(3,TT); %vectors of locations position, velocity, acceleration, x
 Wvx=[1 1 0; 0 1 1; 0 0 1]; %Gravity matrix (row1,col2 is vel effect on pos
 pvax(:,1)=[1 1 0]';  %Starting vector pos=1, vel=1, acc=0.
-
 for tt=1:TT-1
-    pvay(:,tt+1)=Wvy*pvay(:,tt); %Update x position 
+    pvay(:,tt+1)=Wvy*pvay(:,tt); %Update x position
     if pvay(1,tt+1)<ground; pvay(1,tt+1)=ground; pvay(2,tt+1)=-0.5*pvay(2,tt+1); end
     pvax(:,tt+1)=Wvx*pvax(:,tt);
 end
@@ -137,7 +136,7 @@ axes(h(2));
 %Make agents that expand search.
 for mm=1:MM %Number of expansion search steps
     axes(h(2));
-    
+
     for aa=1:AA; %Number of agents
         if mm==1;
             ag(aa).searchspace=zeros(maxspvy+10,maxspvx+10); %Create the plot of search space
@@ -155,7 +154,7 @@ for mm=1:MM %Number of expansion search steps
         ry=maxspvy/50; %Note that these will be used in opposite way x and y for image
         ag(aa).W(1).vvstrg=[ry -ry rx -rx]'; %vector for expansion of range x and y opposite for image
         ag(aa).W(1).vvrg=ag(aa).W(1).vvinit +  ag(aa).W(1).Wrg*ag(aa).W(1).vvstrg; %Search range
-        
+
         for xx=1:maxspvy+10; %Needed to go larger to avoid losing points, not sure why
             for yy=1:maxspvx+10; %coordinates x and y are opposite due to image?
                if xx<ag(aa).W(1).vvrg(1,1) && xx>ag(aa).W(1).vvrg(2,1) && yy<ag(aa).W(1).vvrg(3,2) && yy>ag(aa).W(1).vvrg(4,2);
@@ -164,24 +163,24 @@ for mm=1:MM %Number of expansion search steps
                end
             end
         end
-        
+
         %showspace
-        
+
 %         for zz=1:TT
 %         space(maxspvy+10-ceil(pvay(1,zz)),ceil(pvax(1,zz)))=1;
 %         end
         %showspace=showspace(1:maxspvy+10,1:maxspvx+10)+realspace;
         showspace(ag(aa).W(1).vvinit(1,1),ag(aa).W(1).vvinit(1,2))=0.2; %Repeat this so visible
-        
+
         ag(aa).testspace=ag(aa).searchspace(1:maxspvy+10,1:maxspvx+10).*realspace;
         [tcx tcy]=find(ag(aa).testspace==1); %Find next spot within search space
         ag(aa).W(2).vvnext=[tcx tcy ones(length(tcy),1)]; %This is the next found position in the search space
-        
+
         ag(aa).W(2).Wxva=zeros(3,3);
         ag(aa).W(2).Wdyny=zeros(3,3);
         %Wcorner=[1 0 0.5; 0 1 0.5; 0 0 1];
         %ag(aa).W(2).initcorner=Wcorner*ag(aa).W(1).vvinit';
-        
+
         %IF THE number of points in test space are nonzero, then compute
         %corner to get velocity and acceleration AND then Wdyn
         if length(tcy)>0;
@@ -190,11 +189,11 @@ for mm=1:MM %Number of expansion search steps
                 %velocity and acceleration
             %ag(aa).W(2).corner(cc)=[ag(aa).W(1).vvinit'+[0.5 0 0]'  ag(aa).W(1).vvinit'  ag(aa).W(1).vvinit'+[0 0.5 0]'];
             ag(aa).W(2).corner(cc).c=[ag(aa).W(2).vvnext(cc,:)'+[0.5 0 0]'  ag(aa).W(2).vvnext(cc,:)'  ag(aa).W(2).vvnext(cc,:)'+[0 0.5 0]'];
-            
+
                 if cc>1  %Compute the velocity affine transform.
                 ag(aa).W(2).Wvel(cc).c=ag(aa).W(2).corner(cc).c*inv(ag(aa).W(2).corner(cc-1).c);
 
-                ag(aa).W(2).corner(cc-1).c   %Print the corners and the velocity affine matrix              
+                ag(aa).W(2).corner(cc-1).c   %Print the corners and the velocity affine matrix
                 ag(aa).W(2).corner(cc).c
                 ag(aa).W(2).Wvel(cc).c
                 ['above shows: corner(cc-1) corner(cc) and Wvel(cc)']
@@ -205,28 +204,28 @@ for mm=1:MM %Number of expansion search steps
                     ag(aa).W(2).Wvel(cc-1).c %Print the velocity matrix and acceleration matrix
                     ag(aa).W(2).Wvel(cc).c
                     ag(aa).W(2).Wacc(cc).c
-                    ['above: Wvel(cc-1) Wvel(cc) Wacc(cc)'] 
-                
+                    ['above: Wvel(cc-1) Wvel(cc) Wacc(cc)']
+
                     %if cc>2 && cc<6 - Create the arrays of pos, vel, acc.
                     %Wxva and Wyva
                     ag(aa).W(2).Wxva(1,cc-2)=ag(aa).W(2).corner(cc).c(1,2); %Take pos from corner
                     ag(aa).W(2).Wxva(2,cc-2)=ag(aa).W(2).Wvel(cc).c(1,3);
                     ag(aa).W(2).Wxva(3,cc-2)=ag(aa).W(2).Wacc(cc).c(1,3);
-                    ag(aa).W(2).Wxva                     
+                    ag(aa).W(2).Wxva
                     ['above: ag(aa).W(2).Wxva']
                     ag(aa).W(2).Wyva(1,cc-2)=ag(aa).W(2).corner(cc).c(2,2); %Take pos from corner
                     ag(aa).W(2).Wyva(2,cc-2)=ag(aa).W(2).Wvel(cc).c(2,3);
-                    ag(aa).W(2).Wyva(3,cc-2)=ag(aa).W(2).Wacc(cc).c(2,3); 
-                    ag(aa).W(2).Wyva                     
+                    ag(aa).W(2).Wyva(3,cc-2)=ag(aa).W(2).Wacc(cc).c(2,3);
+                    ag(aa).W(2).Wyva
                     ['above: ag(aa).W(2).Wyva']
-                    
-                    %Compute the dynamical matrix from the xva arrays. 
+
+                    %Compute the dynamical matrix from the xva arrays.
                     if cc>5; %ag(aa).W(2).Wxva(1,4)>0; %This tests that there are at least four columns active in Wxva
                         ag(aa).W(2).Wdynx=ag(aa).W(2).Wxva(:,2:4)*inv(ag(aa).W(2).Wxva(:,1:3));
                         ag(aa).W(2).Wdyny=ag(aa).W(2).Wyva(:,2:4)*inv(ag(aa).W(2).Wyva(:,1:3));
                         ag(aa).W(2).Wdynx
                         ag(aa).W(2).Wdyny
-                      ['above: ag(aa).W(2).Wdynx and dyny'] 
+                      ['above: ag(aa).W(2).Wdynx and dyny']
                       PP=80;
                       ag(aa).W(2).vvpredx=zeros(3,PP);
                       ag(aa).W(2).vvpredy=zeros(3,PP);
@@ -247,15 +246,15 @@ for mm=1:MM %Number of expansion search steps
                       aa
                       %pause(0.02);
                     end
-                end %if cc>2    
-            
+                end %if cc>2
+
             end %end for cc=1:length(tcy)
         end %if length(tcy>0)
 
                     ['length(tcy)   aa']   %Show the current length of the selected segment and agent number
                     [length(tcy)  aa]
                     %pause
-        
+
         %ag(aa).W(2).Winv=
 %         ag(aa).W(1).vvinit
 %         ag(aa).W(1).vvrg
@@ -267,11 +266,11 @@ for mm=1:MM %Number of expansion search steps
     for aa=1:AA
         allpredspace=allpredspace+ag(aa).predspace;
     end
-    
+
     axes(h(3));
     image(64-64*(0.2*realspace+allpredspace));
-    
-    
+
+
 end %for mm
 
 
@@ -291,9 +290,9 @@ end %for mm
 % LLy=0; %This changes line slope for y
 % cx=26; %10;
 % cy=13; %5;
-% 
+%
 %  for aa=1:AA;
-%      for ww=1:WW %Indicate with Ws, but Could have search matrix be 
+%      for ww=1:WW %Indicate with Ws, but Could have search matrix be
 %          %SET UP THE DYNAMICAL MATRIX
 %         ag(aa).Ws(ww).W=zeros(6, 6);
 %         ag(aa).Ws(ww).W(1:3,1:3)=[1 -ff 0; 1-ampx  1-ff  -cx; 0 0 1]; %; -0.1*cx 0 0*0.1*cx]; %0.9]; %; 0 0 0];
@@ -301,14 +300,14 @@ end %for mm
 %         ag(aa).Ws(ww).vv=[cx+5 16 1 cy-3 .4 1]';
 %      end
 %  end
-%  
+%
 %  axes(h(1));
 %  for pp=1:pp
 %    for aa=1:AA;
-%      for ww=1:WW %Indicate with Ws, but Could have search matrix be 
+%      for ww=1:WW %Indicate with Ws, but Could have search matrix be
 %          ag(aa).Ws(ww).Vsx(:,pp+1)=(ag(aa).Ws(ww).W)^pp*ag(aa).Ws(ww).vv;; %Standard dynamical matrix.
-%          plot(ag(aa).Ws(ww).Vsx(1,:),ag(aa).Ws(ww).Vsx(4,:),'g*','MarkerSize',14); %Search step matrix         
+%          plot(ag(aa).Ws(ww).Vsx(1,:),ag(aa).Ws(ww).Vsx(4,:),'g*','MarkerSize',14); %Search step matrix
 %      end
 %    end
 %  end
-% 
+%
