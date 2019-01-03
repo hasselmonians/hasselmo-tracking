@@ -55,7 +55,7 @@ x       = xmat(1, 1) + xmat(2, 1) * t + (1/2) * xmat(3, 1) * t.^2;
 y       = ymat(1, 1) + ymat(2, 1) * t + (1/2) * ymat(3, 1) * t.^2;
 
 % plot the result
-figure; hold on
+figure('OuterPosition',[0 0 1200 1200],'PaperUnits','points','PaperSize',[1200 1200]); hold on
 plot(xmat(1, :), ymat(1, :), 'k');
 plot(x, y, 'r');
 
@@ -80,7 +80,37 @@ disp(Wy)
 
 %%
 % then we will see perfect accordance between the theoretical "physical" model
-% and the matrix transformation model. This is because while the matrix transformation
+% and the matrix transformation model.
+
+xmat        = zeros(3, nSteps);
+ymat        = zeros(3, nSteps);
+
+xmat(:, 1)  = transpose([1, 1, 0]);
+ymat(:, 1)  = transpose([2, 20, -0.8]);
+
+for ii = 1:nSteps-1
+    xmat(:, ii+1)   = Wx * xmat(:, ii);
+    ymat(:, ii+1)   = Wy * ymat(:, ii);
+end
+
+figure('OuterPosition',[0 0 1200 1200],'PaperUnits','points','PaperSize',[1200 1200]); hold on
+plot(xmat(1, :), ymat(1, :), 'k');
+plot(x, y, 'r');
+
+xlabel('x-position')
+ylabel('y-position')
+title('quadratic trajectory (corrected)')
+legend({'matrix model', 'physical model'})
+
+prettyFig()
+
+if being_published
+    snapnow
+    delete(gcf)
+end
+
+%%
+% This is because while the matrix transformation
 % model is an accurate representation of the physical model in matrix form, it must
 % rely on knowing the functional form of the trajectory _a priori_, just as the
 % physical model must.
