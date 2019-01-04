@@ -10,7 +10,7 @@ qqq
 %% Instantiate important variables
 
 % time resolution
-dt      = 0.1;
+dt      = 0.01;
 t_end   = 10;
 time    = dt:dt:t_end;
 nSteps  = length(time);
@@ -64,16 +64,11 @@ for ii = 1:6
 
   if ii > 2
     % compute the transformation matrix for acceleration
-    % index by time and reduce to 2 dimensions
-    WW              = squeeze(W(1, ii, :, :));
-    WW0             = squeeze(W(1, ii-1, :, :));
-
-    % compute the acceleration matrix and store
-    W(2, ii, :, :)  = WW * inv(WW0);
+    W(2, ii, :, :)  = squeeze(W(1, ii, :, :)) * inv(squeeze(W(1, ii-1, :, :)));
 
     % store the position, velocity, and acceleration in matrices
-    xmat(ii, :)     = [x(ii) W(1, ii, 1, 3) W(2, ii, 1, 3)];
-    ymat(ii, :)     = [y(ii) W(1, ii, 2, 3) W(2, ii, 2, 3)];
+    xmat(ii, :)     = [x(ii), W(1, ii, 1, 3), W(2, ii, 1, 3)];
+    ymat(ii, :)     = [y(ii), W(1, ii, 2, 3), W(2, ii, 2, 3)];
   end
 
   if ii > 3
@@ -85,15 +80,8 @@ for ii = 1:6
     xymat(2, 2, 1:3, 1:2) = ymat(ii-2:ii, 1:2);
 
     % compute the inverse prediction matrix
-    % for x-dimension
-    WW0             = squeeze(xymat(1, 1, :, :));
-    WW              = squeeze(xymat(1, 2, :, :));
-    Wx(ii, :, :)    = WW * inv(WW0);
-
-    % for y-dimension
-    WW0             = squeeze(xymat(2, 1, :, :));
-    WW              = squeeze(xymat(2, 2, :, :));
-    Wy(ii, :, :)    = WW * inv(WW0);
+    Wx(ii, :, :)    = squeeze(xymat(1, 2, :, :)) * inv(squeeze(xymat(1, 1, :, :)));
+    Wy(ii, :, :)    = squeeze(xymat(2, 2, :, :)) * inv(squeeze(xymat(2, 1, :, :)));
   end
 end
 
