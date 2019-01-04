@@ -27,7 +27,7 @@
 close all
 clear all
 figure('Position',[10 600 400 1200]);
-fig2D=gcf; axvX2D=gca; colormap(gray); 
+fig2D=gcf; axvX2D=gca; colormap(gray);
 
 %Code for selecting subplots
 numplots=1;
@@ -41,7 +41,7 @@ TT=100; %Number of steps/elements for each trajectory
 step=0.1 %Step size in time
 time=[step:step:step*TT]'; %Time scale set by step size and duration
 
-limit=6; %Step number for starting predictions. Can't be lower than 6, but 
+limit=6; %Step number for starting predictions. Can't be lower than 6, but
 %works with higher numbers (more empty, unpredicted circles)
 
 
@@ -97,22 +97,22 @@ for tt=1:TT-1;
 oldcorner=corner;
 corner(1:2,1:3)=[xv(tt+1,[1 4])+[.01 0]; xv(tt+1,[1 4]); xv(tt+1,[1 4])+[0 .01]]';
 
-%COMPUTE affine matrix invW.cornerW with translation=velocity from INVERSE of 
+%COMPUTE affine matrix invW.cornerW with translation=velocity from INVERSE of
 %two consecutive corners (oldcorner and corner). Can only start at tt>1.
 if tt>1 && tt<limit+1 %VELOCITY
      invW(tt).cornerW=(corner*inv(oldcorner)); %This gives translation velocity between sequential locations
-%         ['x and y velocity'] 
+%         ['x and y velocity']
 %         invW(tt).cornerW
 end
-%COMPUTE affine matrix invW.cornerWW with translation=acceleration from 
+%COMPUTE affine matrix invW.cornerWW with translation=acceleration from
 %two consecutive invW.cornerW at tt and tt-1. This gives acceleration.
 if tt>2 && tt<limit+1 %ACCELERATION
     invW(tt).cornerWW=(invW(tt).cornerW*inv(invW(tt-1).cornerW)); %This gives acceleration
-%     ['x and y acceleration'] 
+%     ['x and y acceleration']
 %     invW(tt).cornerWW
-    
-%Put extracted velocity and acceleration into a vector array into temporary arrays corxva 
-%that contain position, velocity, acceleration. Need to do this because can't use 1:3 in struct    
+
+%Put extracted velocity and acceleration into a vector array into temporary arrays corxva
+%that contain position, velocity, acceleration. Need to do this because can't use 1:3 in struct
 corxva(tt,:)=[xv(tt,1) invW(tt).cornerW(1,3) invW(tt).cornerWW(1,3)];
 coryva(tt,:)=[xv(tt,4) invW(tt).cornerW(2,3) invW(tt).cornerWW(2,3)];
 end
@@ -137,15 +137,15 @@ if tt>3 && tt<limit+1;
     end
  %['x pos,xv, xa and Wx transition with air resistance']
  %[xvY1 invW(tt).Wx]
- 
+
     invW(tt).Wy=(xvY2*inv(xvY1)); %3x3 prediction matrix for y dynamics (if curved)
     invW(tt).WyDiff=xvY2*inv(xvY1); %Y dimension 2x2
- 
+
     if abs(coryva(tt,3))<0.00001;  %This is to use 2x2 matrix if linear trajectory (no acceleration)
         invW(tt).Wy=eye(3,3);
         invW(tt).Wy(1:2,1:2)=(xvY2(1:2,1:2)*inv(xvY1(1:2,1:2))); %Y dimension 2x2
-        
-        
+
+
     end
 %  ['y pos, yv, ya and Wy transition']
 %  [xvX1 invW(tt).Wy]
@@ -167,7 +167,7 @@ end
 %end %for tt
 if (tt<TT && func==1) || (func>1 && mod(tt,4)==1);
 plot(xv(:,1),xv(:,4)-graphdist*func,'o','MarkerSize',8,'Color',[0.5 0.5 0.5]); hold on
-plot(predx(:,1),predy(:,1)-graphdist*func,'k*'); hold on; 
+plot(predx(:,1),predy(:,1)-graphdist*func,'k*'); hold on;
 xlim([-10 110]); ylim([-2100 100]);
 drawnow
 end
@@ -179,7 +179,7 @@ invW(limit).Wx
 invW(limit).Wy
 invW(limit).WyDiff
 
-[inv(xvY1)  xvY2] 
+[inv(xvY1)  xvY2]
 [(inv(xvY1)*xvY2)  (inv(xvY1)*xvY2)']
 [(xvY2'*inv(xvY1'))  ]
 %pause
