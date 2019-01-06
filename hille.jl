@@ -49,7 +49,7 @@ function computeTrajectory(x, t, dt)
         x′[ii] = reshape(temp, 1)[1];
     end
     return x′
-end # computeTrajectory
+end # computeTrajectory 
 
 # plot to check the trajectory
 using Plots; plotlyjs()
