@@ -52,7 +52,7 @@ function computeTrajectory(x, t, dt)
 end # computeTrajectory a
 
 # plot to check the trajectory
-using Plots; plotlyjs()
+using Plots; plotlyjs() a
 plot(t, x)
 x′ = computeTrajectory(x, t, dt)
 plot!(t, x′)
