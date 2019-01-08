@@ -14,6 +14,20 @@ dt      = 0.01;
 t_end   = 10;
 time    = dt:dt:t_end;
 nSteps  = length(time);
+mindex  = 6;
+
+% generate the trajectory
+x       = 10*time;
+y       = -40 + 100*time - 10*time.^2;
+
+% generate the corner matrix
+c       = ones(3);
+
+for ii = 1:mindex
+  c0    = c;
+  
+
+%%%%%%%
 
 % trajectory-tracking matrices
 corner  = ones(3);
@@ -21,14 +35,14 @@ W       = NaN(2, nSteps, 3, 3);
   % the first dimension is velocity or acceleration
   % the second dimension is the time index
   % the third and fourth dimensions produce the 2-D matrix
-xmat    = NaN(6, 3);
-ymat    = NaN(6, 3);
+xmat    = NaN(mindex, 3);
+ymat    = NaN(mindex, 3);
 xymat   = ones(2, 2, 3, 3);
   % the first dimension is x or y
   % the second dimension is which time index it is
   % the third and fourth dimensions produce the 2-D matrix
-Wx      = NaN(6, 3, 3);
-Wy      = NaN(6, 3, 3);
+Wx      = NaN(mindex, 3, 3);
+Wy      = NaN(mindex, 3, 3);
 xhat    = NaN(nSteps, 3);
 yhat    = NaN(nSteps, 3);
 
@@ -45,7 +59,7 @@ tstepmat          = zeros(3);
 tstepmat(1, 1)    = dt;
 tstepmat(2, 3)    = dt;
 
-for ii = 1:6
+for ii = 1:mindex
   % save the old corner
   oldcorner       = corner;
 
@@ -73,7 +87,7 @@ for ii = 1:6
 
   if ii > 3
     % create sequential position, velocity, acceleration arrays
-    % restructure xmat and ymat into a 3x3 matrix
+    % restructure xmat and ymat into a 3x3 ma                                                                                                                    trix
     xymat(1, 1, 1:3, 1:2) = xmat(ii-3:ii-1, 1:2);
     xymat(1, 2, 1:3, 1:2) = xmat(ii-2:ii, 1:2);
     xymat(2, 1, 1:3, 1:2) = ymat(ii-3:ii-1, 1:2);
@@ -88,8 +102,8 @@ end
 %% Predict the Trajectory
 
 for ii = 7:nSteps
-  xhat(ii, :)       = squeeze(Wx(6, :, :))^(ii-6) * transpose([xmat(6, 1:2), 1]);
-  yhat(ii, :)       = squeeze(Wy(6, :, :))^(ii-6) * transpose([ymat(6, 1:2), 1]);
+  xhat(ii, :)       = squeeze(Wx(mindex, :, :))^(ii-mindex) * transpose([xmat(mindex, 1:2), 1]);
+  yhat(ii, :)       = squeeze(Wy(mindex, :, :))^(ii-mindex) * transpose([ymat(mindex, 1:2), 1]);
 end
 
 %% Plot the Trajectory
