@@ -4,4 +4,4 @@
 deps/deps.jl
 *.aux
 *.log
-*.tex
+*.synctex.gz
