@@ -64,7 +64,7 @@ ylabel('y-position')
 title('quadratic trajectory')
 legend({'matrix model', 'physical model'})
 
-prettyFig()
+figlib.pretty()
 
 if being_published
     snapnow
@@ -102,7 +102,7 @@ ylabel('y-position')
 title('quadratic trajectory (corrected)')
 legend({'matrix model', 'physical model'})
 
-prettyFig()
+figlib.pretty()
 
 if being_published
     snapnow

@@ -64,7 +64,7 @@ ylabel('f(t)')
 legend({'trajectory', 'prediction'}, 'Location', 'best')
 title('Predicting a sinusoidal trajectory')
 
-prettyFig()
+figlib.pretty()
 
 if being_published
   snapnow
