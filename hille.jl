@@ -2,7 +2,8 @@
 # predict a trajectory by using the Hille series
 
 # preamble
-using Calculus, Plots; plotlyjs();
+using Calculus, Plots;
+gr()
 
 # instantiate time parameters
 Δt      = 0.01
