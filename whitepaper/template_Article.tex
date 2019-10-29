@@ -64,9 +64,9 @@ If $f$ is a polynomial of order $n$ then $n+1$ terms of the series are needed to
 
 is known, it can be evolved forward by taking the dot product with $\left[ \frac{t^n}{\Delta^n} \right]_{n \in \mathbb{N}}$ to find $f(a + t)$.
 
-\paragraph{Example.} Here is a simple example. The source code is in 
+\paragraph{Example.} Here is a simple example. The source code is in
 
-\texttt{https://github.com/hasselmonians/hasselmo-tracking/hille.jl} 
+\texttt{https://github.com/hasselmonians/hasselmo-tracking/hille.jl}
 
 written in Julia. The goal is to predict the one-dimensional trajectory $f(t) = -40 + 100 t - 10 t^2$. For $\Delta = 0.01$, the first and second finite differences are computed at $f(2\Delta)$. By the discrete Taylor series (Hille series), the form of the solution can be found.
 

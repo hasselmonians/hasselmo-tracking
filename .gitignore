@@ -5,3 +5,5 @@ deps/deps.jl
 *.aux
 *.log
 *.synctex.gz
+*.fdb_latexmk
+*.fls
